@@ -2,5 +2,7 @@
 <resources>
 
     <attr name="colorToolbarTitle" format="reference|color" />
+    <attr name="colorPrimaryButton" format="reference|color" />
+    <attr name="colorPrimaryButtonPressed" format="reference|color" />
 
 </resources>

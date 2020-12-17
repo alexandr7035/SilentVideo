@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SilentVideo</string>
+    <string name="btn_choose_file">Choose a file</string>
 </resources>

@@ -17,6 +17,8 @@
         <item name="android:navigationBarColor">@color/gray_600</item>
 
         <item name="colorToolbarTitle">@color/white</item>
+        <item name="colorPrimaryButton">@color/yellow_500</item>
+        <item name="colorPrimaryButtonPressed">@color/yellow_600</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
     </style>
