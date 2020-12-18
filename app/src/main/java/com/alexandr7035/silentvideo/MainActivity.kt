@@ -7,7 +7,12 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
+import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 private val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<String>
@@ -49,8 +54,32 @@ class MainActivity : AppCompatActivity() {
 
             videoUriLiveData.postValue(selectedFile.toString())
 
+            muteVideo()
+
         }
     }
 
+
+    fun muteVideo() {
+
+        val executionId = FFmpeg.executeAsync("-h") { executionId, returnCode ->
+
+                Log.d(LOG_TAG, "start")
+
+                if (returnCode == RETURN_CODE_SUCCESS) {
+                    Log.d(LOG_TAG, "Async command execution completed successfully.")
+                    Log.d(LOG_TAG, "execution id $executionId")
+                }
+                else if (returnCode == RETURN_CODE_CANCEL) {
+                    Log.d(LOG_TAG,"Async command execution cancelled by user.")
+
+                }
+                else {
+                    Log.d(LOG_TAG, "Async command execution failed with $returnCode")
+                }
+            }
+
+
+    }
 
 }
