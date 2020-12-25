@@ -23,6 +23,8 @@ private lateinit var videoUriLiveData: MutableLiveData<String>
 private lateinit var TEMP_FILE_PATH: String
 private lateinit var TEMP_MUTED_FILE_PATH: String
 
+private const val COPY_BUFFER_SIZE = 1024
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
 
         if (srcStream != null) {
-            val f: Long = srcStream.copyTo(dstStream, 1024)
+            val f: Long = srcStream.copyTo(dstStream, COPY_BUFFER_SIZE)
             Log.d(LOG_TAG, "copied $f bytes")
             srcStream.close()
         }
