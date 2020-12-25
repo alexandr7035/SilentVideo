@@ -12,6 +12,9 @@
     <color name="gray_600">#2D2D2D</color>
     <color name="gray_500">#363636</color>
 
-    <color name="yellow_500">#B78906</color>
-    <color name="yellow_600">#9A750C</color>
+    <color name="orange_500">#FF6E40</color>
+    <color name="orange_600">#AB4F32</color>
+
+    <color name="yellow_500">#FFD740</color>
+    <color name="yellow_600">#D5B232</color>
 </resources>
