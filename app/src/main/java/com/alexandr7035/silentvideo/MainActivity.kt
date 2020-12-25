@@ -1,6 +1,7 @@
 package com.alexandr7035.silentvideo
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,12 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
+import java.io.*
 
 
 private val LOG_TAG = "DEBUG_SV"
@@ -54,12 +54,23 @@ class MainActivity : AppCompatActivity() {
 
             val selectedFile = data?.data
 
+
+
+            val outputDir = getExternalFilesDir(null)?.absolutePath.toString()
+            val outputFilePath = outputDir + File.separator + "video.mp4"
+
+            if (selectedFile != null) {
+                copyVideoToWorkDir(selectedFile, outputFilePath)
+            }
+
             videoUriLiveData.postValue(selectedFile.toString())
 
+            val file: File = File(selectedFile.toString())
+            Log.d(LOG_TAG, file.absolutePath)
 
-            Log.d(LOG_TAG, getExternalFilesDir(null)?.absolutePath.toString())
 
-            muteVideo("")
+
+            //muteVideo("")
 
         }
     }
@@ -100,6 +111,46 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+
+    }
+
+
+    private fun copyVideoToWorkDir(srcUri: Uri, outputPath: String) {
+
+        Log.d(LOG_TAG, "copy file to $outputPath")
+
+        //val source = File(srcUri.toString())
+        //val dest = File(outputPath)
+
+        val outputDir = getExternalFilesDir(null)?.absolutePath.toString()
+        val videoPath = outputDir + File.separator + "video.mp4"
+        val outputPath = outputDir + File.separator + "video_muted.mp4"
+
+        val source = File(videoPath)
+        val dest = File(outputPath)
+
+        if(! dest.exists()){
+            dest.createNewFile();
+        }
+
+        Log.d(LOG_TAG, "start copying")
+
+
+            val src: InputStream = FileInputStream(source)
+            val dst: OutputStream = FileOutputStream(dest)
+            // Copy the bits from instream to outstream
+            val buf = ByteArray(1024)
+
+
+            val f: Long = src.copyTo(dst, 1024)
+
+            Log.d(LOG_TAG, "copied $f bytes")
+
+            src.close()
+            dst.close()
+
+
+        Log.d(LOG_TAG, "stop copying")
 
     }
 
