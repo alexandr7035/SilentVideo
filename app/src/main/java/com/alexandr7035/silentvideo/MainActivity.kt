@@ -20,6 +20,9 @@ import java.io.*
 private val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<String>
 
+private lateinit var TEMP_FILE_PATH: String
+private lateinit var TEMP_MUTED_FILE_PATH: String
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
+        TEMP_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video.mp4"
+        TEMP_MUTED_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video_muted.mp4"
     }
 
 
@@ -55,41 +61,21 @@ class MainActivity : AppCompatActivity() {
 
             val selectedFile = data?.data
 
-
-
-            val outputDir = getExternalFilesDir(null)?.absolutePath.toString()
-            val outputFilePath = outputDir + File.separator + "video.mp4"
-
             if (selectedFile != null) {
-                copyVideoToWorkDir(selectedFile, outputFilePath)
+                copyVideoToWorkDir(selectedFile)
+                muteVideo()
             }
 
             videoUriLiveData.postValue(selectedFile.toString())
-
-            val file: File = File(selectedFile.toString())
-            Log.d(LOG_TAG, file.absolutePath)
-
-
-
-            muteVideo("")
 
         }
     }
 
 
-    // We need to use paths to file because ffmpeg doesn't support content ids
-    private fun muteVideo(videoPath: String) {
+    private fun muteVideo() {
 
-        val outputDir = getExternalFilesDir(null)?.absolutePath.toString()
-
-        val videoPath = outputDir + File.separator + "video.mp4"
-        val outputPath = outputDir + File.separator + "video_muted.mp4"
-
-        val command: String = "-i $videoPath -c copy -an $outputPath -y"
-
-        Log.d(LOG_TAG, command)
-
-
+        val command: String = "-i $TEMP_FILE_PATH -c copy -an $TEMP_MUTED_FILE_PATH -y"
+        Log.d(LOG_TAG, "execute FFMPEG command $command")
 
         val executionId = FFmpeg.executeAsync(command) { executionId, returnCode ->
 
@@ -116,35 +102,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun copyVideoToWorkDir(srcUri: Uri, outputPath: String) {
+    private fun copyVideoToWorkDir(srcUri: Uri) {
 
-        Log.d(LOG_TAG, "copy file to $outputPath")
-
-        //val source = File(srcUri.toString())
-        val dest = File(outputPath)
-
+        Log.d(LOG_TAG, "copy file to $TEMP_FILE_PATH")
 
         val contentResolver = getContentResolver()
         val srcStream: InputStream? = contentResolver.openInputStream(srcUri)
-        val dstStream: OutputStream = FileOutputStream(File(outputPath))
+        val dstStream: OutputStream = FileOutputStream(File(TEMP_FILE_PATH))
 
 
+        if (srcStream != null) {
+            val f: Long = srcStream.copyTo(dstStream, 1024)
+            Log.d(LOG_TAG, "copied $f bytes")
+            srcStream.close()
+        }
 
-
-        Log.d(LOG_TAG, "start copying")
-
-
-            if (srcStream != null) {
-                val f: Long = srcStream.copyTo(dstStream, 1024)
-                Log.d(LOG_TAG, "copied $f bytes")
-                srcStream.close()
-            }
-
-
-
-
-            dstStream.close()
-
+        dstStream.close()
 
         Log.d(LOG_TAG, "stop copying")
 
