@@ -18,7 +18,7 @@ import java.io.*
 
 
 private val LOG_TAG = "DEBUG_SV"
-private lateinit var videoUriLiveData: MutableLiveData<String>
+private lateinit var videoUriLiveData: MutableLiveData<Uri>
 
 private lateinit var TEMP_FILE_PATH: String
 private lateinit var TEMP_MUTED_FILE_PATH: String
@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity() {
 
         videoUriLiveData = MutableLiveData()
 
-        videoUriLiveData.observe(this, Observer<String> { uri ->
+        videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null ) {
-                videoPreview.text = uri
+                videoPreview.text = uri.toString()
             }
         })
 
@@ -51,11 +51,16 @@ class MainActivity : AppCompatActivity() {
         chooseFile.type = "*/*"
         intent = Intent.createChooser(chooseFile, "Choose a file")
         startActivityForResult(intent, 1)
-
     }
 
     fun muteVideoBtn(v: View) {
 
+        val selectedFile = videoUriLiveData.value
+
+        if (selectedFile != null) {
+            copyVideoToWorkDir(selectedFile)
+            muteVideo()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -65,15 +70,11 @@ class MainActivity : AppCompatActivity() {
 
             Log.d(LOG_TAG, "update video uri")
 
-            val selectedFile = data?.data
+            val selectedFileUri = data?.data
 
-            if (selectedFile != null) {
-                copyVideoToWorkDir(selectedFile)
-                muteVideo()
+            if (selectedFileUri != null) {
+                videoUriLiveData.postValue(selectedFileUri)
             }
-
-            videoUriLiveData.postValue(selectedFile.toString())
-
         }
     }
 
