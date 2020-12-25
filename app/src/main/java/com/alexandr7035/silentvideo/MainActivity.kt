@@ -1,5 +1,6 @@
 package com.alexandr7035.silentvideo
 
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            //muteVideo("")
+            muteVideo("")
 
         }
     }
@@ -120,34 +121,29 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "copy file to $outputPath")
 
         //val source = File(srcUri.toString())
-        //val dest = File(outputPath)
-
-        val outputDir = getExternalFilesDir(null)?.absolutePath.toString()
-        val videoPath = outputDir + File.separator + "video.mp4"
-        val outputPath = outputDir + File.separator + "video_muted.mp4"
-
-        val source = File(videoPath)
         val dest = File(outputPath)
 
-        if(! dest.exists()){
-            dest.createNewFile();
-        }
+
+        val contentResolver = getContentResolver()
+        val srcStream: InputStream? = contentResolver.openInputStream(srcUri)
+        val dstStream: OutputStream = FileOutputStream(File(outputPath))
+
+
+
 
         Log.d(LOG_TAG, "start copying")
 
 
-            val src: InputStream = FileInputStream(source)
-            val dst: OutputStream = FileOutputStream(dest)
-            // Copy the bits from instream to outstream
-            val buf = ByteArray(1024)
+            if (srcStream != null) {
+                val f: Long = srcStream.copyTo(dstStream, 1024)
+                Log.d(LOG_TAG, "copied $f bytes")
+                srcStream.close()
+            }
 
 
-            val f: Long = src.copyTo(dst, 1024)
 
-            Log.d(LOG_TAG, "copied $f bytes")
 
-            src.close()
-            dst.close()
+            dstStream.close()
 
 
         Log.d(LOG_TAG, "stop copying")
