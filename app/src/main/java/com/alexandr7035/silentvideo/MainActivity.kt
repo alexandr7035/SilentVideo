@@ -1,9 +1,13 @@
 package com.alexandr7035.silentvideo
 
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.ParcelFileDescriptor
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -94,6 +98,8 @@ class MainActivity : AppCompatActivity() {
 
                     Toast.makeText(this, "ffmpeg succeded", Toast.LENGTH_SHORT).show()
 
+                    saveMutedVideoToMediaStore()
+
                 }
                 else if (returnCode == RETURN_CODE_CANCEL) {
                     Log.d(LOG_TAG,"Async command execution cancelled by user.")
@@ -113,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(LOG_TAG, "copy file to $TEMP_FILE_PATH")
 
-        val contentResolver = getContentResolver()
+        val contentResolver = contentResolver
         val srcStream: InputStream? = contentResolver.openInputStream(srcUri)
         val dstStream: OutputStream = FileOutputStream(File(TEMP_FILE_PATH))
 
@@ -128,6 +134,40 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(LOG_TAG, "stop copying")
 
+    }
+
+
+    private fun saveMutedVideoToMediaStore() {
+        val videoFileName = "muted_video_" + System.currentTimeMillis() + ".mp4"
+
+        val valuesVideos = ContentValues()
+        valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
+        valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName)
+        valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName)
+        valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+        valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+        valuesVideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
+        valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 1)
+        val resolver: ContentResolver = contentResolver
+        val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val uriSavedVideo = resolver.insert(collection, valuesVideos)
+
+        if (uriSavedVideo != null) {
+            val pfd: ParcelFileDescriptor? = contentResolver.openFileDescriptor(uriSavedVideo, "w")
+            val out = FileOutputStream(pfd!!.fileDescriptor)
+
+            val videoFile = File(TEMP_MUTED_FILE_PATH)
+            val inputStream = FileInputStream(videoFile)
+
+            Log.d(LOG_TAG, "copy video to galery")
+            val bytes: Long = inputStream.copyTo(out)
+
+            Log.d(LOG_TAG, "copied $bytes bytes")
+
+            inputStream.close()
+            out.close()
+
+        }
     }
 
 }
