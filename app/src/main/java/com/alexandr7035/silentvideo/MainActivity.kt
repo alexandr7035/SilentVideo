@@ -9,11 +9,9 @@ import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,9 +61,16 @@ class MainActivity : AppCompatActivity() {
         val selectedFile = videoUriLiveData.value
 
         if (selectedFile != null) {
+
             GlobalScope.launch {
+                Log.d(LOG_TAG, "start muting in background")
                 copyVideoToWorkDir(selectedFile)
-                muteVideo()
+
+                if (muteVideo() == RETURN_CODE_SUCCESS) {
+                    saveMutedVideoToMediaStore()
+                }
+
+                Log.d(LOG_TAG, "finish muting video")
             }
         }
     }
@@ -86,34 +91,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun muteVideo() {
 
-        val command: String = "-i $TEMP_FILE_PATH -c copy -an $TEMP_MUTED_FILE_PATH -y"
+    private fun muteVideo(): Int {
+
+        val command = "-i $TEMP_FILE_PATH -c copy -an $TEMP_MUTED_FILE_PATH -y"
         Log.d(LOG_TAG, "execute FFMPEG command $command")
 
-        val executionId = FFmpeg.executeAsync(command) { executionId, returnCode ->
-
-                Log.d(LOG_TAG, "start")
-
-                if (returnCode == RETURN_CODE_SUCCESS) {
-                    Log.d(LOG_TAG, "Async command execution completed successfully.")
-                    Log.d(LOG_TAG, "execution id $executionId")
-
-                    Toast.makeText(this, "ffmpeg succeded", Toast.LENGTH_SHORT).show()
-
-                    saveMutedVideoToMediaStore()
-
-                }
-                else if (returnCode == RETURN_CODE_CANCEL) {
-                    Log.d(LOG_TAG,"Async command execution cancelled by user.")
-                    Toast.makeText(this, "ffmpeg canceled", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Log.d(LOG_TAG, "Async command execution failed with $returnCode")
-                    Toast.makeText(this, "ffmpeg failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-
+        // Execution can be synchronous because method is run inside coroutine
+        return FFmpeg.execute(command)
 
     }
 
