@@ -49,4 +49,6 @@ dependencies {
     apply plugin: 'com.android.application'
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
 }

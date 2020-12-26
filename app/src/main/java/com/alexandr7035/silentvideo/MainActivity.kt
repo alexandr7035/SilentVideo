@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
@@ -18,6 +17,8 @@ import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.*
 
 
@@ -62,8 +63,10 @@ class MainActivity : AppCompatActivity() {
         val selectedFile = videoUriLiveData.value
 
         if (selectedFile != null) {
-            copyVideoToWorkDir(selectedFile)
-            muteVideo()
+            GlobalScope.launch {
+                copyVideoToWorkDir(selectedFile)
+                muteVideo()
+            }
         }
     }
 
