@@ -3,6 +3,8 @@ package com.alexandr7035.silentvideo
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
@@ -37,7 +39,13 @@ class MainActivity : AppCompatActivity() {
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null ) {
-                videoPreview.text = uri.toString()
+                //videoPreview.text = uri.toString()
+
+                val mMMR = MediaMetadataRetriever()
+                mMMR.setDataSource(this,  uri)
+                val bmp: Bitmap? = mMMR.getFrameAtTime(0L)
+
+                videoPreview.setImageBitmap(bmp)
             }
         })
 
@@ -87,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             if (selectedFileUri != null) {
                 videoUriLiveData.postValue(selectedFileUri)
             }
+
         }
     }
 
