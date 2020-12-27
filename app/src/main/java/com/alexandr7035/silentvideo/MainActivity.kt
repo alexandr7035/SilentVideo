@@ -17,8 +17,10 @@ import androidx.lifecycle.Observer
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.*
 
 
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         videoUriLiveData = MutableLiveData()
+
+        progressBar.visibility = View.GONE
 
         videoPreview.setImageResource(R.drawable.default_bg)
 
@@ -73,12 +77,24 @@ class MainActivity : AppCompatActivity() {
 
         if (selectedFile != null) {
 
+            // FIXME Don't use globalscope
             GlobalScope.launch {
                 Log.d(LOG_TAG, "start muting in background")
+
+                // Update ui in main thread
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.VISIBLE
+                }
+
                 copyVideoToWorkDir(selectedFile)
 
                 if (muteVideo() == RETURN_CODE_SUCCESS) {
                     saveMutedVideoToMediaStore()
+                }
+
+                // Update ui in main thread
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.GONE
                 }
 
                 Log.d(LOG_TAG, "finish muting video")
