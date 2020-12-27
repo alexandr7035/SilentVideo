@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         videoUriLiveData = MutableLiveData()
 
+        videoPreview.setImageResource(R.drawable.default_bg)
+
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null ) {
                 //videoPreview.text = uri.toString()
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 val bmp: Bitmap? = mMMR.getFrameAtTime(0L)
 
                 videoPreview.setImageBitmap(bmp)
+
             }
         })
 
