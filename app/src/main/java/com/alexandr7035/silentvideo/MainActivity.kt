@@ -16,6 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,11 +45,11 @@ class MainActivity : AppCompatActivity() {
         videoPreview.setImageResource(R.drawable.default_bg)
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
-            if (uri != null ) {
+            if (uri != null) {
                 //videoPreview.text = uri.toString()
 
                 val mMMR = MediaMetadataRetriever()
-                mMMR.setDataSource(this,  uri)
+                mMMR.setDataSource(this, uri)
                 val bmp: Bitmap? = mMMR.getFrameAtTime(0L)
 
                 videoPreview.setImageBitmap(bmp)
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
+                    showSuccessSnack()
                 }
 
                 Log.d(LOG_TAG, "finish muting video")
@@ -117,7 +119,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
 
 
     private fun muteVideo(): Int {
@@ -186,4 +187,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun showSuccessSnack() {
+        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted), Snackbar.LENGTH_LONG)
+        snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
+
+            Log.d(LOG_TAG, "snack action")
+            snack.dismiss()
+        })
+
+
+
+        snack.show()
+    }
+
+    private fun showFailSnack() {
+
+    }
 }

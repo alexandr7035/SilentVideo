@@ -2,4 +2,7 @@
     <string name="app_name">SilentVideo</string>
     <string name="btn_choose_file">Choose a file</string>
     <string name="btn_mute_video">Mute video</string>
+    
+    <string name="snack_text_video_muted">Video is muted</string>
+    <string name="snack_action_ok">Ok</string>
 </resources>
