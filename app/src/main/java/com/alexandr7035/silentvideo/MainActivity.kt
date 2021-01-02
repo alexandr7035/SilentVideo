@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.VISIBLE
+                    muteVideoBtn.isEnabled = false
                 }
 
                 copyVideoToWorkDir(selectedFile)
@@ -102,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
+                    muteVideoBtn.isEnabled = true
                     showSuccessSnack(time)
                 }
 
