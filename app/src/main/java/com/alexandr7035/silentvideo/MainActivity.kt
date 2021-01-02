@@ -25,11 +25,13 @@ import kotlinx.coroutines.withContext
 import java.io.*
 
 
-private val LOG_TAG = "DEBUG_SV"
+private const val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<Uri>
 
 private lateinit var TEMP_FILE_PATH: String
 private lateinit var TEMP_MUTED_FILE_PATH: String
+
+private const val MUTED_VIDEO_PREFIX = "silent_video_"
 
 private const val COPY_BUFFER_SIZE = 4096
 
@@ -67,8 +69,9 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent
         val chooseFile = Intent(Intent.ACTION_GET_CONTENT)
 
+        // Fixme allow to select only a video
         chooseFile.type = "*/*"
-        intent = Intent.createChooser(chooseFile, "Choose a file")
+        intent = Intent.createChooser(chooseFile, getString(R.string.file_chooser_title))
         startActivityForResult(intent, 1)
     }
 
@@ -164,7 +167,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun saveMutedVideoToMediaStore() {
-        val videoFileName = "muted_video_" + System.currentTimeMillis() + ".mp4"
+        val videoFileName = MUTED_VIDEO_PREFIX + System.currentTimeMillis() + ".mp4"
 
         val valuesVideos = ContentValues()
         valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
