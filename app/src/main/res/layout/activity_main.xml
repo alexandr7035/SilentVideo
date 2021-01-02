@@ -66,8 +66,26 @@
         app:backgroundTint="?attr/colorPrimaryVariant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/file"
-        app:tint="@color/white" />
+        android:src="@drawable/file"
+        app:tint="@null"/>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/resetFileBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:onClick="resetFileBtn"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorPrimaryVariant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/close"
+        app:tint="@null"/>
+
+
 
     <ImageView
         android:id="@+id/videoPreview"

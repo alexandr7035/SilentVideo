@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBar.visibility = View.GONE
 
-        videoPreview.setImageResource(R.drawable.default_bg)
+
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null) {
@@ -57,8 +57,19 @@ class MainActivity : AppCompatActivity() {
 
                 videoPreview.setImageBitmap(bmp)
 
+                chooseFileBtn.visibility = View.GONE
+                resetFileBtn.visibility = View.VISIBLE
+
+            }
+            else {
+                videoPreview.setImageResource(R.drawable.default_bg)
+                chooseFileBtn.visibility = View.VISIBLE
+                resetFileBtn.visibility = View.GONE
             }
         })
+
+        videoUriLiveData.postValue(null)
+
 
         toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
 
@@ -75,6 +86,10 @@ class MainActivity : AppCompatActivity() {
         chooseFile.type = "*/*"
         intent = Intent.createChooser(chooseFile, getString(R.string.file_chooser_title))
         startActivityForResult(intent, 1)
+    }
+
+    fun resetFileBtn(v: View) {
+        videoUriLiveData.postValue(null)
     }
 
     fun muteVideoBtn(v: View) {
