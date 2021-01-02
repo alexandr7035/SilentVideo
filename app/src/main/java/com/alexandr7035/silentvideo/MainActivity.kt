@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
 
         TEMP_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video.mp4"
         TEMP_MUTED_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video_muted.mp4"

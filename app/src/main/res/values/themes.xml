@@ -21,11 +21,18 @@
         <item name="colorPrimaryButtonPressed">@color/yellow_600</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
+
+        <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
+   </style>
+
+    <style name="MyToolbarStyle" parent="Theme.SilentVideo">
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-
-    <style name="MyToolbarStyle" parent="Widget.AppCompat.Toolbar">
-        <item name="android:background">?attr/colorPrimary</item>
+    <style name="popupOverflowMenu" parent="Widget.AppCompat.Light.PopupMenu.Overflow" >
+        <item name="android:textColorSecondary">#000000</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
+        <item name="android:popupBackground">@color/white</item>
     </style>
 
 </resources>

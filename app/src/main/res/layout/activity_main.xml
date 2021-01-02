@@ -15,13 +15,16 @@
         android:minHeight="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:theme="@style/MyToolbarStyle"
+        android:background="?attr/colorPrimary"
+        app:contentInsetLeft="20dp"
+        >
 
         <TextView
             android:id="@+id/toolbarTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
             android:text="@string/app_name"
             android:textColor="?attr/colorToolbarTitle"
             android:textSize="@dimen/toolbar_title_text_size"
