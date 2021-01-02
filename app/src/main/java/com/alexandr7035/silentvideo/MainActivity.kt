@@ -29,12 +29,6 @@ import java.io.*
 private const val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<Uri>
 
-private lateinit var TEMP_FILE_PATH: String
-private lateinit var TEMP_MUTED_FILE_PATH: String
-
-private const val MUTED_VIDEO_PREFIX = "silent_video_"
-
-private const val COPY_BUFFER_SIZE = 4096
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,8 +67,6 @@ class MainActivity : AppCompatActivity() {
 
         toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
 
-        TEMP_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video.mp4"
-        TEMP_MUTED_FILE_PATH = getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video_muted.mp4"
     }
 
 
@@ -88,56 +80,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, 1)
     }
 
-    fun resetFileBtn(v: View) {
-        videoUriLiveData.postValue(null)
-    }
-
-    fun muteVideoBtn(v: View) {
-
-        val selectedFile = videoUriLiveData.value
-
-        if (selectedFile != null) {
-
-            // FIXME Don't use globalscope
-            GlobalScope.launch {
-                Log.d(LOG_TAG, "start muting in background")
-
-                val startTimeMs = System.currentTimeMillis()
-
-                // Update ui in main thread
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.VISIBLE
-                    muteVideoBtn.isEnabled = false
-                }
-
-                copyVideoToWorkDir(selectedFile)
-
-                if (muteVideo() == RETURN_CODE_SUCCESS) {
-                    saveMutedVideoToMediaStore()
-                }
-
-                cleanUp()
-
-                val endTimeMs = System.currentTimeMillis()
-
-                val time: Float = (endTimeMs - startTimeMs) / 1000F
-
-                // Update ui in main thread
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.GONE
-                    muteVideoBtn.isEnabled = true
-                    showSuccessSnack(time)
-                }
-
-
-                Log.d(LOG_TAG, "finish muting video")
-            }
-        }
-
-        else {
-            Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG).show()
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -156,76 +98,49 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun muteVideo(): Int {
-
-        val command = "-i $TEMP_FILE_PATH -c copy -an $TEMP_MUTED_FILE_PATH -y"
-        Log.d(LOG_TAG, "execute FFMPEG command $command")
-
-        // Execution can be synchronous because method is run inside coroutine
-        return FFmpeg.execute(command)
-
+    fun resetFileBtn(v: View) {
+        videoUriLiveData.postValue(null)
     }
 
+    
+    fun muteVideoBtn(v: View) {
 
-    private fun copyVideoToWorkDir(srcUri: Uri) {
+        val selectedFile = videoUriLiveData.value
 
-        Log.d(LOG_TAG, "copy file to $TEMP_FILE_PATH")
+        if (selectedFile != null) {
 
-        val contentResolver = contentResolver
-        val srcStream: InputStream? = contentResolver.openInputStream(srcUri)
-        val dstStream: OutputStream = FileOutputStream(File(TEMP_FILE_PATH))
+            // FIXME Don't use globalscope
+            GlobalScope.launch {
+                Log.d(LOG_TAG, "start muting in background")
 
+                val startTimeMs = System.currentTimeMillis()
 
-        if (srcStream != null) {
-            val f: Long = srcStream.copyTo(dstStream, COPY_BUFFER_SIZE)
-            Log.d(LOG_TAG, "copied $f bytes")
-            srcStream.close()
+                // Update ui in main thread
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.VISIBLE
+                    muteVideoBtn.isEnabled = false
+                }
+
+                VideoMuter.muteVideo(this@MainActivity, selectedFile)
+
+                val endTimeMs = System.currentTimeMillis()
+
+                val time: Float = (endTimeMs - startTimeMs) / 1000F
+
+                // Update ui in main thread
+                withContext(Dispatchers.Main) {
+                    progressBar.visibility = View.GONE
+                    muteVideoBtn.isEnabled = true
+                    showSuccessSnack(time)
+                }
+
+                Log.d(LOG_TAG, "finish muting video")
+            }
         }
 
-        dstStream.close()
-
-        Log.d(LOG_TAG, "stop copying")
-
-    }
-
-
-    private fun saveMutedVideoToMediaStore() {
-        val videoFileName = MUTED_VIDEO_PREFIX + System.currentTimeMillis() + ".mp4"
-
-        val valuesVideos = ContentValues()
-        valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
-        valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName)
-        valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName)
-        valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-        valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-        valuesVideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
-        valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 1)
-        val resolver: ContentResolver = contentResolver
-        val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-        val uriSavedVideo = resolver.insert(collection, valuesVideos)
-
-        if (uriSavedVideo != null) {
-            val pfd: ParcelFileDescriptor? = contentResolver.openFileDescriptor(uriSavedVideo, "w")
-            val out = FileOutputStream(pfd!!.fileDescriptor)
-
-            val videoFile = File(TEMP_MUTED_FILE_PATH)
-            val inputStream = FileInputStream(videoFile)
-
-            Log.d(LOG_TAG, "copy video to galery")
-            val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
-
-            Log.d(LOG_TAG, "copied $bytes bytes")
-
-            inputStream.close()
-            out.close()
-
+        else {
+            Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG).show()
         }
-    }
-
-
-    private fun cleanUp() {
-        File(TEMP_MUTED_FILE_PATH).delete()
-        File(TEMP_FILE_PATH).delete()
     }
 
 
@@ -236,8 +151,6 @@ class MainActivity : AppCompatActivity() {
             Log.d(LOG_TAG, "snack action")
             snack.dismiss()
         })
-
-
 
         snack.show()
     }
