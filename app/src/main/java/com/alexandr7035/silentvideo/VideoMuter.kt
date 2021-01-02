@@ -41,22 +41,23 @@ class VideoMuter {
 
                 if (removeAudio() == Config.RETURN_CODE_SUCCESS) {
                     saveMutedVideoToMediaStore(context)
-                } else {
+                }
+                else {
+                    cleanUp()
                     return MUTING_CODE_FAIL
                 }
             }
 
             // If any exception occurred (f.e. when copyTo() method called)
             catch (e: IOException) {
+                cleanUp()
                 return MUTING_CODE_FAIL
             }
 
-
-            // Clean up
-            File(TEMP_FILE_PATH).delete()
-            File(TEMP_MUTED_FILE_PATH).delete()
+            cleanUp()
 
             return MUTING_CODE_SUCCESS
+
         }
 
 
@@ -124,6 +125,11 @@ class VideoMuter {
                 out.close()
 
             }
+        }
+
+        private fun cleanUp() {
+            File(TEMP_FILE_PATH).delete()
+            File(TEMP_MUTED_FILE_PATH).delete()
         }
 
     }
