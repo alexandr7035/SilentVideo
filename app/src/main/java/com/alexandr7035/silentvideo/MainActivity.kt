@@ -82,6 +82,8 @@ class MainActivity : AppCompatActivity() {
             GlobalScope.launch {
                 Log.d(LOG_TAG, "start muting in background")
 
+                val startTimeMs = System.currentTimeMillis()
+
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.VISIBLE
@@ -93,11 +95,16 @@ class MainActivity : AppCompatActivity() {
                     saveMutedVideoToMediaStore()
                 }
 
+                val endTimeMs = System.currentTimeMillis()
+
+                val time: Float = (endTimeMs - startTimeMs) / 1000F
+
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.GONE
-                    showSuccessSnack()
+                    showSuccessSnack(time)
                 }
+
 
                 Log.d(LOG_TAG, "finish muting video")
             }
@@ -188,8 +195,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showSuccessSnack() {
-        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted), Snackbar.LENGTH_LONG)
+    private fun showSuccessSnack(time: Float) {
+        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted, time), Snackbar.LENGTH_LONG)
         snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
 
             Log.d(LOG_TAG, "snack action")
