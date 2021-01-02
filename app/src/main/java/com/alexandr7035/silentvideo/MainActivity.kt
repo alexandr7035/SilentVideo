@@ -1,29 +1,22 @@
 package com.alexandr7035.silentvideo
 
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
-import com.arthenica.mobileffmpeg.FFmpeg
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.*
 
 
 private const val LOG_TAG = "DEBUG_SV"
@@ -59,6 +52,8 @@ class MainActivity : AppCompatActivity() {
                 videoPreview.setImageResource(R.drawable.default_bg)
                 chooseFileBtn.visibility = View.VISIBLE
                 resetFileBtn.visibility = View.GONE
+
+                progressBar.visibility = View.GONE
             }
         })
 
@@ -138,9 +133,23 @@ class MainActivity : AppCompatActivity() {
 
                     Log.d(LOG_TAG, "finish muting video")
                 }
+
+                // If muting failed for some reason (see VideoMuter class)
                 else {
                     // FIXME handle this
                     Log.d(LOG_TAG, "muting FAILED")
+
+                    // Preform in ui thread
+                    withContext(Dispatchers.Main) {
+
+                        progressBar.visibility = View.GONE
+                        muteVideoBtn.isEnabled = true
+
+                        showFailSnack()
+
+                        // Reset the video
+                        videoUriLiveData.value = null
+                    }
                 }
 
             }
@@ -164,6 +173,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFailSnack() {
+        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muting_failed), Snackbar.LENGTH_LONG)
+        snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
+
+            Log.d(LOG_TAG, "snack action")
+            snack.dismiss()
+        })
+
+       // snack.setTextColor(ContextCompat.getColor(this, R.color.red_500))
+
+        snack.show()
 
     }
 }
