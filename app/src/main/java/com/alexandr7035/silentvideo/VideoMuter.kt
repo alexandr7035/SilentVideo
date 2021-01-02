@@ -25,23 +25,38 @@ class VideoMuter {
 
         private lateinit var videoUri: Uri;
 
-        fun muteVideo(context: Context, videoUri: Uri) {
+        const val MUTING_CODE_SUCCESS = 0
+        const val MUTING_CODE_FAIL = 1
+
+
+        // Returns execution code
+        fun muteVideo(context: Context, videoUri: Uri): Int {
             this.videoUri = videoUri
 
             TEMP_FILE_PATH = context.getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video.mp4"
             TEMP_MUTED_FILE_PATH = context.getExternalFilesDir(null)?.absolutePath.toString() + File.separator + "video_muted.mp4"
 
-            copyVideoToWorkDir(context)
+            try {
+                copyVideoToWorkDir(context)
 
-            if (removeAudio() == Config.RETURN_CODE_SUCCESS) {
-                saveMutedVideoToMediaStore(context)
-
+                if (removeAudio() == Config.RETURN_CODE_SUCCESS) {
+                    saveMutedVideoToMediaStore(context)
+                } else {
+                    return MUTING_CODE_FAIL
+                }
             }
+
+            // If any exception occurred (f.e. when copyTo() method called)
+            catch (e: IOException) {
+                return MUTING_CODE_FAIL
+            }
+
 
             // Clean up
             File(TEMP_FILE_PATH).delete()
             File(TEMP_MUTED_FILE_PATH).delete()
 
+            return MUTING_CODE_SUCCESS
         }
 
 

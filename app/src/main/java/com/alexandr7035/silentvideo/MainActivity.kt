@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         videoUriLiveData.postValue(null)
     }
 
-    
+
     fun muteVideoBtn(v: View) {
 
         val selectedFile = videoUriLiveData.value
@@ -121,20 +121,28 @@ class MainActivity : AppCompatActivity() {
                     muteVideoBtn.isEnabled = false
                 }
 
-                VideoMuter.muteVideo(this@MainActivity, selectedFile)
+                // Mute video
+                val result = VideoMuter.muteVideo(this@MainActivity, selectedFile)
 
-                val endTimeMs = System.currentTimeMillis()
+                if (result == VideoMuter.MUTING_CODE_SUCCESS) {
+                    val endTimeMs = System.currentTimeMillis()
 
-                val time: Float = (endTimeMs - startTimeMs) / 1000F
+                    val time: Float = (endTimeMs - startTimeMs) / 1000F
 
-                // Update ui in main thread
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.GONE
-                    muteVideoBtn.isEnabled = true
-                    showSuccessSnack(time)
+                    // Update ui in main thread
+                    withContext(Dispatchers.Main) {
+                        progressBar.visibility = View.GONE
+                        muteVideoBtn.isEnabled = true
+                        showSuccessSnack(time)
+                    }
+
+                    Log.d(LOG_TAG, "finish muting video")
+                }
+                else {
+                    // FIXME handle this
+                    Log.d(LOG_TAG, "muting FAILED")
                 }
 
-                Log.d(LOG_TAG, "finish muting video")
             }
         }
 
