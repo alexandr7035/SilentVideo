@@ -5,6 +5,9 @@
     
     <string name="snack_text_video_muted">Video is muted in %1$.2f s.</string>
     <string name="snack_action_ok">OK</string>
+
+    <string name="toast_select_video">Please, select a video first</string>
+
     <string name="file_chooser_title">Choose a video</string>
 
     <string name="menu_item_settings_text">Settings</string>
