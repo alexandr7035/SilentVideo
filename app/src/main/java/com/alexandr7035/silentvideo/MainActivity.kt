@@ -116,6 +116,8 @@ class MainActivity : AppCompatActivity() {
                     saveMutedVideoToMediaStore()
                 }
 
+                cleanUp()
+
                 val endTimeMs = System.currentTimeMillis()
 
                 val time: Float = (endTimeMs - startTimeMs) / 1000F
@@ -218,6 +220,12 @@ class MainActivity : AppCompatActivity() {
             out.close()
 
         }
+    }
+
+
+    private fun cleanUp() {
+        File(TEMP_MUTED_FILE_PATH).delete()
+        File(TEMP_FILE_PATH).delete()
     }
 
 
