@@ -50,10 +50,21 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null) {
-                //videoPreview.text = uri.toString()
+
+                Log.d(LOG_TAG, uri.toString())
 
                 val mMMR = MediaMetadataRetriever()
-                mMMR.setDataSource(this, uri)
+
+                // Exceptions means that selected file is not a video
+                try {
+                    mMMR.setDataSource(this, uri)
+                }
+                catch (e: IllegalArgumentException) {
+                    videoUriLiveData.postValue(null)
+                    showFailSnack(getString(R.string.snack_text_unsupported_file))
+                    vibrate(300)
+                }
+
                 val bmp: Bitmap? = mMMR.getFrameAtTime(0L)
 
                 videoPreview.setImageBitmap(bmp)
@@ -84,7 +95,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
     fun chooseFileBtn(v: View) {
         val intent: Intent
         val chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-        
+
         chooseFile.type = "video/*"
         intent = Intent.createChooser(chooseFile, getString(R.string.file_chooser_title))
         startActivityForResult(intent, 1)
@@ -163,7 +174,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                         progressBar.visibility = View.GONE
                         muteVideoBtn.isEnabled = true
 
-                        showFailSnack()
+                        showFailSnack(getString(R.string.snack_text_video_muting_failed))
                         vibrate(300)
 
                         // Reset the video
@@ -192,8 +203,8 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
         snack.show()
     }
 
-    private fun showFailSnack() {
-        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muting_failed), Snackbar.LENGTH_LONG)
+    private fun showFailSnack(text: String) {
+        val snack: Snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG)
         snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
 
             Log.d(LOG_TAG, "snack action")
