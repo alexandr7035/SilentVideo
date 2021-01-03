@@ -113,6 +113,7 @@ class MainActivity : AppCompatActivity() {
                 // Update ui in main thread
                 withContext(Dispatchers.Main) {
                     progressBar.visibility = View.VISIBLE
+                    resetFileBtn.visibility = View.GONE
                     muteVideoBtn.isEnabled = false
                 }
 
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         progressBar.visibility = View.GONE
                         muteVideoBtn.isEnabled = true
+                        resetFileBtn.visibility = View.VISIBLE
                         showSuccessSnack(time)
                     }
 
