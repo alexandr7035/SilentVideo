@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/item_settings"
-        android:title="@string/menu_item_settings_text" />
+        android:id="@+id/item_vibration"
+        android:checkable="true"
+        android:title="@string/menu_item_vibration_text" />
 </menu>

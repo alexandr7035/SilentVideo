@@ -1,14 +1,22 @@
 package com.alexandr7035.silentvideo
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -21,18 +29,24 @@ import kotlinx.coroutines.withContext
 
 private const val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<Uri>
+private lateinit var sharedPreferences: SharedPreferences
+private lateinit var vibrator: Vibrator
 
+class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
-class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         videoUriLiveData = MutableLiveData()
 
-        progressBar.visibility = View.GONE
+        // Init SharedPreferences
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
-
+        // Init menu
+        toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
+        toolbar.setOnMenuItemClickListener(this)
+        onCreateOptionsMenu(toolbar.menu)
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null) {
@@ -46,21 +60,23 @@ class MainActivity : AppCompatActivity() {
 
                 chooseFileBtn.visibility = View.GONE
                 resetFileBtn.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
 
             }
             else {
                 videoPreview.setImageResource(R.drawable.default_bg)
                 chooseFileBtn.visibility = View.VISIBLE
                 resetFileBtn.visibility = View.GONE
-
                 progressBar.visibility = View.GONE
             }
         })
 
         videoUriLiveData.postValue(null)
 
+        // Vibrator
 
-        toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
+        // Vibrator
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     }
 
@@ -131,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                         muteVideoBtn.isEnabled = true
                         resetFileBtn.visibility = View.VISIBLE
                         showSuccessSnack(time)
+                        vibrate(200)
                     }
 
                     Log.d(LOG_TAG, "finish muting video")
@@ -148,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                         muteVideoBtn.isEnabled = true
 
                         showFailSnack()
+                        vibrate(300)
 
                         // Reset the video
                         videoUriLiveData.value = null
@@ -159,6 +177,7 @@ class MainActivity : AppCompatActivity() {
 
         else {
             Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG).show()
+            vibrate(100)
         }
     }
 
@@ -187,4 +206,48 @@ class MainActivity : AppCompatActivity() {
         snack.show()
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
+        Log.d(LOG_TAG, "onCreateOptionsMenu")
+
+        val vibrationItem = menu.findItem(R.id.item_vibration)
+
+
+        vibrationItem.isChecked =  sharedPreferences.getBoolean(getString(R.string.shared_pref_key_vibration), true)
+
+        return true
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        if (item.itemId == R.id.item_vibration) {
+            item.isChecked = ! item.isChecked
+
+            // Save the setting
+            val prefEditor = sharedPreferences.edit()
+            prefEditor.putBoolean(getString(R.string.shared_pref_key_vibration), item.isChecked)
+            prefEditor.apply()
+
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun vibrate(time: Long) {
+
+        // Return of vibration is disabled
+        if (! sharedPreferences.getBoolean(getString(R.string.shared_pref_key_vibration), true)) {
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+        else {
+            vibrator.vibrate(time)
+        }
+    }
+
 }

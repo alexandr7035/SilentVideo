@@ -12,4 +12,7 @@
     <string name="file_chooser_title">Choose a video</string>
 
     <string name="menu_item_settings_text">Settings</string>
+    <string name="menu_item_vibration_text">Vibration</string>
+
+    <string name="shared_pref_key_vibration">VIBRATION</string>
 </resources>
