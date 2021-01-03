@@ -23,6 +23,9 @@
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
 
         <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
+
+        <!-- Fixes an issue with non-visible shadows-->
+        <item name="android:spotShadowAlpha">0.5</item>
    </style>
 
     <style name="MyToolbarStyle" parent="Theme.SilentVideo">
