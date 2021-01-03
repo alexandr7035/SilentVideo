@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
@@ -98,33 +99,43 @@ class VideoMuter {
             val videoFileName = MUTED_VIDEO_PREFIX + System.currentTimeMillis() + ".mp4"
 
             val valuesVideos = ContentValues()
-            valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
+            val resolver: ContentResolver = context.contentResolver
+
             valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName)
             valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName)
             valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
             valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-            valuesVideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
-            valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 1)
-            val resolver: ContentResolver = context.contentResolver
-            val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            val uriSavedVideo = resolver.insert(collection, valuesVideos)
 
-            if (uriSavedVideo != null) {
-                val pfd: ParcelFileDescriptor? = resolver.openFileDescriptor(uriSavedVideo, "w")
-                val out = FileOutputStream(pfd!!.fileDescriptor)
+            // FIXME add support of lower versions
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
+                valuesVideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
+                valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 1)
 
-                val videoFile = File(TEMP_MUTED_FILE_PATH)
-                val inputStream = FileInputStream(videoFile)
+                val collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                val uriSavedVideo = resolver.insert(collection, valuesVideos)
 
-                Log.d(LOG_TAG, "copy video to galery")
-                val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
+                if (uriSavedVideo != null) {
+                    val pfd: ParcelFileDescriptor? = resolver.openFileDescriptor(uriSavedVideo, "w")
+                    val out = FileOutputStream(pfd!!.fileDescriptor)
 
-                Log.d(LOG_TAG, "copied $bytes bytes")
+                    val videoFile = File(TEMP_MUTED_FILE_PATH)
+                    val inputStream = FileInputStream(videoFile)
 
-                inputStream.close()
-                out.close()
+                    Log.d(LOG_TAG, "copy video to galery")
+                    val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
+
+                    Log.d(LOG_TAG, "copied $bytes bytes")
+
+                    inputStream.close()
+                    out.close()
+
+                }
 
             }
+
+
+
         }
 
         private fun cleanUp() {
