@@ -84,9 +84,8 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
     fun chooseFileBtn(v: View) {
         val intent: Intent
         val chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-
-        // Fixme allow to select only a video
-        chooseFile.type = "*/*"
+        
+        chooseFile.type = "video/*"
         intent = Intent.createChooser(chooseFile, getString(R.string.file_chooser_title))
         startActivityForResult(intent, 1)
     }
