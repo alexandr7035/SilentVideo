@@ -48,9 +48,13 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
         toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
         toolbar.setOnMenuItemClickListener(this)
         onCreateOptionsMenu(toolbar.menu)
+        // Clear submenu header
+        toolbar.menu.findItem(R.id.item_theme).subMenu.clearHeader()
+        // Make themes submenu checkable
+        toolbar.menu.findItem(R.id.item_theme).subMenu.setGroupCheckable(0, true, true)
 
-        // Folow system by default
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        // Follow system by default
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null) {
@@ -235,14 +239,34 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
-        if (item.itemId == R.id.item_vibration) {
-            item.isChecked = ! item.isChecked
+        when (item.itemId) {
+            R.id.item_vibration -> {
+                item.isChecked = !item.isChecked
 
-            // Save the setting
-            val prefEditor = sharedPreferences.edit()
-            prefEditor.putBoolean(getString(R.string.shared_pref_key_vibration), item.isChecked)
-            prefEditor.apply()
+                // Save the setting
+                val prefEditor = sharedPreferences.edit()
+                prefEditor.putBoolean(getString(R.string.shared_pref_key_vibration), item.isChecked)
+                prefEditor.apply()
 
+            }
+
+            R.id.item_theme_as_system -> {
+                Log.d(LOG_TAG, "theme AS SYSTEM set")
+                item.isChecked = ! item.isChecked
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+
+            R.id.item_theme_light -> {
+                Log.d(LOG_TAG, "theme LIGHT set")
+                item.isChecked = ! item.isChecked
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+
+            R.id.item_theme_dark -> {
+                Log.d(LOG_TAG, "theme DARK set")
+                item.isChecked = ! item.isChecked
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
         }
 
         return super.onOptionsItemSelected(item)

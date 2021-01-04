@@ -14,6 +14,11 @@
 
     <string name="menu_item_settings_text">Settings</string>
     <string name="menu_item_vibration_text">Vibration</string>
+    <string name="menu_item_theme_menu">Theme</string>
+    <string name="menu_item_theme_as_system">As system</string>
+    <string name="menu_item_theme_light">Light</string>
+    <string name="menu_item_theme_dark">Dark</string>
+
 
     <string name="shared_pref_key_vibration">VIBRATION</string>
 </resources>
