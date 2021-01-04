@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.SilentVideo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/orange_500</item>
-        <item name="colorPrimaryVariant">@color/orange_600</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_600</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/orange_600</item>
-        <item name="colorSecondaryVariant">@color/orange_600</item>
+        <item name="colorSecondary">@color/purple_600</item>
+        <item name="colorSecondaryVariant">@color/purple_600</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -17,8 +17,8 @@
         <item name="android:navigationBarColor">@color/white</item>
 
         <item name="colorToolbarTitle">@color/white</item>
-        <item name="colorPrimaryButton">@color/yellow_500</item>
-        <item name="colorPrimaryButtonPressed">@color/yellow_600</item>
+        <item name="colorPrimaryButton">@color/purple_500</item>
+        <item name="colorPrimaryButtonPressed">@color/purple_600</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
 
