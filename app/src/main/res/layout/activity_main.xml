@@ -19,7 +19,7 @@
         app:theme="@style/MyToolbarStyle"
         android:background="?attr/colorPrimary"
         app:contentInsetLeft="20dp"
-        android:elevation="7dp"
+        android:elevation="10dp"
         >
 
         <TextView
