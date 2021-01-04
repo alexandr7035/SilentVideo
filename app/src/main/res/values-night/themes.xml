@@ -1,16 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SilentVideo" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.SilentVideo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/gray_600</item>
+        <item name="colorPrimaryVariant">@color/gray_700</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/purple_600</item>
+        <item name="colorSecondaryVariant">@color/purple_600</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:windowBackground">@color/gray_500</item>
+        <item name="android:navigationBarColor">@color/gray_500</item>
+
+        <item name="colorToolbarTitle">@color/white</item>
+        <item name="colorPrimaryButton">@color/gray_700</item>
+        <item name="colorPrimaryButtonPressed">@color/gray_600</item>
+
+        <item name="toolbarStyle">@style/MyToolbarStyle</item>
+
+        <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
+
+        <!-- Fixes an issue with non-visible shadows-->
+        <item name="android:spotShadowAlpha">0.4</item>
     </style>
+
+    <style name="MyToolbarStyle" parent="Theme.SilentVideo">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <style name="popupOverflowMenu" parent="Widget.AppCompat.Light.PopupMenu.Overflow" >
+        <item name="android:textColorSecondary">#000000</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
+        <item name="android:popupBackground">@color/gray_500</item>
+    </style>
+
 </resources>
