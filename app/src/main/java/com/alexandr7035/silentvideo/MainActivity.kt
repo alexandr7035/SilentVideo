@@ -32,17 +32,25 @@ private const val LOG_TAG = "DEBUG_SV"
 private lateinit var videoUriLiveData: MutableLiveData<Uri>
 private lateinit var sharedPreferences: SharedPreferences
 private lateinit var vibrator: Vibrator
+private var dayNightMode: Int = 0
 
 class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Init SharedPreferences
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
+
+        // Read theme settings
+        dayNightMode = sharedPreferences.getInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        AppCompatDelegate.setDefaultNightMode(dayNightMode)
+
+        // Set content view
         setContentView(R.layout.activity_main)
 
         videoUriLiveData = MutableLiveData()
 
-        // Init SharedPreferences
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
         // Init menu
         toolbar.inflateMenu(R.menu.menu_toolbar_activity_main)
@@ -66,8 +74,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                 // Exceptions means that selected file is not a video
                 try {
                     mMMR.setDataSource(this, uri)
-                }
-                catch (e: IllegalArgumentException) {
+                } catch (e: IllegalArgumentException) {
                     videoUriLiveData.postValue(null)
                     showFailSnack(getString(R.string.snack_text_unsupported_file))
                     vibrate(300)
@@ -81,8 +88,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                 resetFileBtn.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
 
-            }
-            else {
+            } else {
                 videoPreview.setImageResource(R.drawable.default_bg)
                 chooseFileBtn.visibility = View.VISIBLE
                 resetFileBtn.visibility = View.GONE
@@ -191,9 +197,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                 }
 
             }
-        }
-
-        else {
+        } else {
             Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG).show()
             vibrate(100)
         }
@@ -219,7 +223,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
             snack.dismiss()
         })
 
-       // snack.setTextColor(ContextCompat.getColor(this, R.color.red_500))
+        // snack.setTextColor(ContextCompat.getColor(this, R.color.red_500))
 
         snack.show()
 
@@ -232,11 +236,23 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
         val vibrationItem = menu.findItem(R.id.item_vibration)
 
+        vibrationItem.isChecked = sharedPreferences.getBoolean(getString(R.string.shared_pref_key_vibration), true)
 
-        vibrationItem.isChecked =  sharedPreferences.getBoolean(getString(R.string.shared_pref_key_vibration), true)
+        when (dayNightMode) {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
+                menu.findItem(R.id.item_theme_as_system).isChecked = true
+            }
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                menu.findItem(R.id.item_theme_light).isChecked = true
+            }
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                menu.findItem(R.id.item_theme_dark).isChecked = true
+            }
+        }
 
         return true
     }
+
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -254,18 +270,32 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                 Log.d(LOG_TAG, "theme AS SYSTEM set")
                 item.isChecked = ! item.isChecked
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
+                val prefEditor = sharedPreferences.edit()
+                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                prefEditor.apply()
+
             }
 
             R.id.item_theme_light -> {
                 Log.d(LOG_TAG, "theme LIGHT set")
                 item.isChecked = ! item.isChecked
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+                val prefEditor = sharedPreferences.edit()
+                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_NO)
+                prefEditor.apply()
             }
 
             R.id.item_theme_dark -> {
                 Log.d(LOG_TAG, "theme DARK set")
                 item.isChecked = ! item.isChecked
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+                val prefEditor = sharedPreferences.edit()
+                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_YES)
+                prefEditor.apply()
+                
             }
         }
 

@@ -21,4 +21,5 @@
 
 
     <string name="shared_pref_key_vibration">VIBRATION</string>
+    <string name="shared_pref_key_theme">THEME</string>
 </resources>
