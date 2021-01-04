@@ -6,8 +6,8 @@
         <item name="colorPrimaryVariant">@color/gray_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purple_600</item>
-        <item name="colorSecondaryVariant">@color/purple_600</item>
+        <item name="colorSecondary">@color/gray_300</item>
+        <item name="colorSecondaryVariant">@color/gray_300</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -33,7 +33,7 @@
     </style>
 
     <style name="popupOverflowMenu" parent="Widget.AppCompat.Light.PopupMenu.Overflow" >
-        <item name="android:textColorSecondary">#000000</item>
+        <item name="android:textColorSecondary">@color/gray_300</item>
         <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:popupBackground">@color/gray_500</item>
     </style>

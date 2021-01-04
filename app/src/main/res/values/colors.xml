@@ -16,6 +16,7 @@
     <color name="gray_700">#1F1F1F</color>
     <color name="gray_600">#2D2D2D</color>
     <color name="gray_500">#363636</color>
+    <color name="gray_300">#676767</color>
 
     <color name="orange_500">#FF6E40</color>
     <color name="orange_600">#AB4F32</color>
