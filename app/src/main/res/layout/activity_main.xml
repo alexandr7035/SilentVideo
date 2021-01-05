@@ -44,12 +44,12 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/background_primary_button"
-        android:textColor="@color/color_button_text"
         android:clickable="true"
         android:onClick="muteVideoBtn"
         android:padding="10dp"
         android:text="@string/btn_mute_video"
         android:textAlignment="center"
+        android:textColor="@color/color_button_text"
         android:textSize="@dimen/primary_button_text_size"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,11 +104,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/videoPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#000000" />
+            <ImageView
+                android:id="@+id/videoPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000000" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -119,8 +119,42 @@
                 android:indeterminateDrawable="@drawable/circular_progress_bar"
                 android:visibility="visible" />
 
+            <LinearLayout
+                android:id="@+id/logoView"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/app_name"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/logo" />
+            </LinearLayout>
+
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,6 +69,8 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
                 Log.d(LOG_TAG, uri.toString())
 
+                logoView.visibility = View.GONE
+
                 val mMMR = MediaMetadataRetriever()
 
                 // Exceptions means that selected file is not a video
@@ -89,7 +91,8 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                 progressBar.visibility = View.GONE
 
             } else {
-                videoPreview.setImageResource(R.drawable.default_bg)
+                videoPreview.setImageResource(android.R.color.transparent)
+                logoView.visibility = View.VISIBLE
                 chooseFileBtn.visibility = View.VISIBLE
                 resetFileBtn.visibility = View.GONE
                 progressBar.visibility = View.GONE
