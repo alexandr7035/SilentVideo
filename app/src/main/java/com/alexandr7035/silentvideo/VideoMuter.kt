@@ -157,7 +157,8 @@ class VideoMuter {
                 valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName);
                 valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName);
                 valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-                valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+                valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                valuesVideos.put(MediaStore.Video.Media.DATE_MODIFIED, System.currentTimeMillis() / 1000)
 
                 val collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
@@ -180,8 +181,7 @@ class VideoMuter {
 
                     inputStream.close()
                     out.close()
-
-                    resolver.update(uriSavedVideo, valuesVideos, null, null);
+                    
 
                 }
                 else {
