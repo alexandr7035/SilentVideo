@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
@@ -52,6 +53,7 @@ class VideoMuter {
             // If any exception occurred (f.e. when copyTo() method called)
             catch (e: IOException) {
                 cleanUp()
+                Log.d(LOG_TAG, "FAIL: an exception. " + e.printStackTrace().toString())
                 return MUTING_CODE_FAIL
             }
 
@@ -96,18 +98,21 @@ class VideoMuter {
 
 
         private fun saveMutedVideoToMediaStore(context: Context) {
+
             val videoFileName = MUTED_VIDEO_PREFIX + System.currentTimeMillis() + ".mp4"
 
-            val valuesVideos = ContentValues()
-            val resolver: ContentResolver = context.contentResolver
-
-            valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName)
-            valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName)
-            valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-            valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-
-            // FIXME add support of lower versions
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                Log.d(LOG_TAG, "save to MediaStore - API 29+")
+
+                val valuesVideos = ContentValues()
+                val resolver: ContentResolver = context.contentResolver
+
+                valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName)
+                valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName)
+                valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+
                 valuesVideos.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/" + "SilentVideo")
                 valuesVideos.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis())
                 valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 1)
@@ -130,15 +135,68 @@ class VideoMuter {
                     inputStream.close()
                     out.close()
 
+                    valuesVideos.put(MediaStore.Video.Media.IS_PENDING, 0);
+                    resolver.update(uriSavedVideo, valuesVideos, null, null);
+                }
+                else {
+                    Log.d(LOG_TAG, "resolver uri is null")
+                    throw IOException("can't get video uri")
                 }
 
             }
 
+            // For lower APIs
+            else {
+                Log.d(LOG_TAG, "save to MediaStore - API lower than 29")
+                val valuesVideos = ContentValues()
 
+                val videoFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath + File.separator + "SilentVideo/" + videoFileName
+                Log.d(LOG_TAG, "save video to $videoFilePath")
+
+                valuesVideos.put(MediaStore.Video.Media.DATA, videoFilePath);
+                valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName);
+                valuesVideos.put(MediaStore.Video.Media.DISPLAY_NAME, videoFileName);
+                valuesVideos.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                valuesVideos.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+
+                val collection = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+
+                val resolver: ContentResolver = context.contentResolver
+                val uriSavedVideo = resolver.insert(collection, valuesVideos)
+
+                Log.d(LOG_TAG, "gallery uri $uriSavedVideo")
+
+                if (uriSavedVideo != null) {
+                    val pfd: ParcelFileDescriptor? = resolver.openFileDescriptor(uriSavedVideo, "w")
+                    val out = FileOutputStream(pfd!!.fileDescriptor)
+
+                    val videoFile = File(TEMP_MUTED_FILE_PATH)
+                    val inputStream = FileInputStream(videoFile)
+
+                    Log.d(LOG_TAG, "copy video to galery")
+                    val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
+
+                    Log.d(LOG_TAG, "copied $bytes bytes")
+
+                    inputStream.close()
+                    out.close()
+
+                    resolver.update(uriSavedVideo, valuesVideos, null, null);
+
+                }
+                else {
+                    Log.d(LOG_TAG, "resolver uri is null")
+                    throw IOException("can't get video uri")
+                }
+
+
+            }
 
         }
 
+
         private fun cleanUp() {
+            Log.d(LOG_TAG, "execute cleanup")
             File(TEMP_FILE_PATH).delete()
             File(TEMP_MUTED_FILE_PATH).delete()
         }
