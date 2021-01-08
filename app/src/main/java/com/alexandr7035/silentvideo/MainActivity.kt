@@ -151,46 +151,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
         if (PermissionsManager.checkForWriteExternalStoragePermission(this) == PermissionsManager.PERMISSION_DENIED) {
             Log.d(LOG_TAG, "request write permission")
-
-            Log.d(LOG_TAG, "should show dialog " + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-
-            Toast.makeText(this, "DON'T HAVE PERMISSIONS", Toast.LENGTH_LONG).show()
-
-            // 2 cases when ActivityCompat.shouldShowRequestPermissionRationalble() is FALSE:
-            // 1) When user has denied the permission previously AND never ask again checkbox was selected.
-            // 2) When user is requesting permission for the first time
-            if (! ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                if (sharedPreferences.getBoolean(getString(R.string.shared_pref_key_first_req_perm_write_external_storage), true)) {
-
-                    val prefEditor = sharedPreferences.edit()
-                    prefEditor.putBoolean(getString(R.string.shared_pref_key_first_req_perm_write_external_storage), false)
-                    prefEditor.apply()
-
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
-                }
-
-                // Means that "never ask again" checkbox was selected
-                // Request dialog will not be shown
-                // Redirect user to app settings
-                else {
-                    Log.d(LOG_TAG, "redirect to app settings")
-
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", getPackageName(), null)
-                    intent.data = uri
-                    startActivityForResult(intent, 134)
-
-                }
-
-            }
-
-            // Means the user has denied the permission previously but has not checked the "Never Ask Again" checkbox.
-            // So request permission again
-            else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
-            }
-
+            PermissionsManager.requestWriteExternalStoragePermission(this, sharedPreferences)
         }
 
         // Have permissions
