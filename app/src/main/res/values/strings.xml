@@ -22,4 +22,5 @@
 
     <string name="shared_pref_key_vibration">VIBRATION</string>
     <string name="shared_pref_key_theme">THEME</string>
+    <string name="shared_pref_key_first_req_perm_write_external_storage">PERM_FIRST_REQUESTED_WRITE_EXTERNAL_STORAGE</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.alexandr7035.silentvideo
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +20,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.AccessController.getContext
 
 
 private const val LOG_TAG = "DEBUG_SV"
@@ -143,66 +147,117 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
     fun muteVideoBtn(v: View) {
 
-        val selectedFile = videoUriLiveData.value
+        Log.d(LOG_TAG, "permission " + PermissionsManager.checkForWriteExternalStoragePermission(this))
 
-        if (selectedFile != null) {
+        if (PermissionsManager.checkForWriteExternalStoragePermission(this) == PermissionsManager.PERMISSION_DENIED) {
+            Log.d(LOG_TAG, "request write permission")
 
-            // FIXME Don't use globalscope
-            GlobalScope.launch {
-                Log.d(LOG_TAG, "start muting in background")
+            Log.d(LOG_TAG, "should show dialog " + ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE))
 
-                val startTimeMs = System.currentTimeMillis()
+            Toast.makeText(this, "DON'T HAVE PERMISSIONS", Toast.LENGTH_LONG).show()
 
-                // Update ui in main thread
-                withContext(Dispatchers.Main) {
-                    progressBar.visibility = View.VISIBLE
-                    resetFileBtn.visibility = View.GONE
-                    muteVideoBtn.isEnabled = false
+            // 2 cases when ActivityCompat.shouldShowRequestPermissionRationalble() is FALSE:
+            // 1) When user has denied the permission previously AND never ask again checkbox was selected.
+            // 2) When user is requesting permission for the first time
+            if (! ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                if (sharedPreferences.getBoolean(getString(R.string.shared_pref_key_first_req_perm_write_external_storage), true)) {
+
+                    val prefEditor = sharedPreferences.edit()
+                    prefEditor.putBoolean(getString(R.string.shared_pref_key_first_req_perm_write_external_storage), false)
+                    prefEditor.apply()
+
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
                 }
 
-                // Mute video
-                val result = VideoMuter.muteVideo(this@MainActivity, selectedFile)
-
-                if (result == VideoMuter.MUTING_CODE_SUCCESS) {
-                    val endTimeMs = System.currentTimeMillis()
-
-                    val time: Float = (endTimeMs - startTimeMs) / 1000F
-
-                    // Update ui in main thread
-                    withContext(Dispatchers.Main) {
-                        progressBar.visibility = View.GONE
-                        muteVideoBtn.isEnabled = true
-                        resetFileBtn.visibility = View.VISIBLE
-                        showSuccessSnack(time)
-                        vibrate(200)
-                    }
-
-                    Log.d(LOG_TAG, "finish muting video")
-                }
-
-                // If muting failed for some reason (see VideoMuter class)
+                // Means that "never ask again" checkbox was selected
+                // Request dialog will not be shown
+                // Redirect user to app settings
                 else {
-                    // FIXME handle this
-                    Log.d(LOG_TAG, "muting FAILED")
+                    Log.d(LOG_TAG, "redirect to app settings")
 
-                    // Preform in ui thread
-                    withContext(Dispatchers.Main) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", getPackageName(), null)
+                    intent.data = uri
+                    startActivityForResult(intent, 134)
 
-                        progressBar.visibility = View.GONE
-                        muteVideoBtn.isEnabled = true
-
-                        showFailSnack(getString(R.string.snack_text_video_muting_failed))
-                        vibrate(300)
-
-                        // Reset the video
-                        videoUriLiveData.value = null
-                    }
                 }
 
             }
-        } else {
-            Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG).show()
-            vibrate(100)
+
+            // Means the user has denied the permission previously but has not checked the "Never Ask Again" checkbox.
+            // So request permission again
+            else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+            }
+
+        }
+
+        // Have permissions
+        else {
+
+            val selectedFile = videoUriLiveData.value
+
+            if (selectedFile != null) {
+
+                // FIXME Don't use globalscope
+                GlobalScope.launch {
+                    Log.d(LOG_TAG, "start muting in background")
+
+                    val startTimeMs = System.currentTimeMillis()
+
+                    // Update ui in main thread
+                    withContext(Dispatchers.Main) {
+                        progressBar.visibility = View.VISIBLE
+                        resetFileBtn.visibility = View.GONE
+                        muteVideoBtn.isEnabled = false
+                    }
+
+                    // Mute video
+                    val result = VideoMuter.muteVideo(this@MainActivity, selectedFile)
+
+                    if (result == VideoMuter.MUTING_CODE_SUCCESS) {
+                        val endTimeMs = System.currentTimeMillis()
+
+                        val time: Float = (endTimeMs - startTimeMs) / 1000F
+
+                        // Update ui in main thread
+                        withContext(Dispatchers.Main) {
+                            progressBar.visibility = View.GONE
+                            muteVideoBtn.isEnabled = true
+                            resetFileBtn.visibility = View.VISIBLE
+                            showSuccessSnack(time)
+                            vibrate(200)
+                        }
+
+                        Log.d(LOG_TAG, "finish muting video")
+                    }
+
+                    // If muting failed for some reason (see VideoMuter class)
+                    else {
+                        // FIXME handle this
+                        Log.d(LOG_TAG, "muting FAILED")
+
+                        // Preform in ui thread
+                        withContext(Dispatchers.Main) {
+
+                            progressBar.visibility = View.GONE
+                            muteVideoBtn.isEnabled = true
+
+                            showFailSnack(getString(R.string.snack_text_video_muting_failed))
+                            vibrate(300)
+
+                            // Reset the video
+                            videoUriLiveData.value = null
+                        }
+                    }
+
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.toast_select_video), Toast.LENGTH_LONG)
+                    .show()
+                vibrate(100)
+            }
         }
     }
 

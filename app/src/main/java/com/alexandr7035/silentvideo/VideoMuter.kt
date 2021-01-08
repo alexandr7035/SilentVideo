@@ -181,7 +181,7 @@ class VideoMuter {
 
                     inputStream.close()
                     out.close()
-                    
+
 
                 }
                 else {
