@@ -288,33 +288,23 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
             R.id.item_theme_as_system -> {
                 Log.d(LOG_TAG, "theme AS SYSTEM set")
                 item.isChecked = ! item.isChecked
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-                val prefEditor = sharedPreferences.edit()
-                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                prefEditor.apply()
+                menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
             }
 
             R.id.item_theme_light -> {
                 Log.d(LOG_TAG, "theme LIGHT set")
                 item.isChecked = ! item.isChecked
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-                val prefEditor = sharedPreferences.edit()
-                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_NO)
-                prefEditor.apply()
+                menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
 
             R.id.item_theme_dark -> {
                 Log.d(LOG_TAG, "theme DARK set")
                 item.isChecked = ! item.isChecked
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
-                val prefEditor = sharedPreferences.edit()
-                prefEditor.putInt(getString(R.string.shared_pref_key_theme), AppCompatDelegate.MODE_NIGHT_YES)
-                prefEditor.apply()
-                
+                menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
 
@@ -335,6 +325,17 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
         else {
             vibrator.vibrate(time)
         }
+    }
+
+
+    private fun menuSwitchNightMode(nightMode: Int) {
+
+        val prefEditor = sharedPreferences.edit()
+        prefEditor.putInt(getString(R.string.shared_pref_key_theme), nightMode)
+        prefEditor.apply()
+
+        AppCompatDelegate.setDefaultNightMode(nightMode)
+
     }
 
 }
