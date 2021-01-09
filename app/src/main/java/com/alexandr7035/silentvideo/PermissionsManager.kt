@@ -10,8 +10,10 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 
 
 class PermissionsManager {
@@ -41,7 +43,7 @@ class PermissionsManager {
         }
 
 
-        fun requestWriteExternalStoragePermission(activity: Activity, sharedPreferences: SharedPreferences) {
+        fun requestWriteExternalStoragePermission(activity: AppCompatActivity, sharedPreferences: SharedPreferences) {
 
             // 2 cases when ActivityCompat.shouldShowRequestPermissionRationalble() is FALSE:
             // 1) When user has denied the permission previously AND never ask again checkbox was selected.
@@ -59,14 +61,21 @@ class PermissionsManager {
 
                 // Means that "never ask again" checkbox was selected
                 // Request dialog will not be shown
-                // Redirect user to app settings
+                // Show explanation dialog and Redirect user to app settings
                 else {
-                    Log.d(LOG_TAG, "redirect to app settings")
 
+                    val fm = activity.supportFragmentManager
+
+                    val dialog = PermissionExplanationDialog(activity.getString(R.string.permission_explanation_write_external_storage))
+                    dialog.show(fm, "tag")
+
+                    /*
+                    Log.d(LOG_TAG, "redirect to app settings")
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     val uri = Uri.fromParts("package", activity.packageName, null)
                     intent.data = uri
                     activity.startActivityForResult(intent, 134)
+                    */
 
                 }
 

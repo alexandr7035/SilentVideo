@@ -16,9 +16,11 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:navigationBarColor">@color/white</item>
 
+        <!-- Custom attributes -->
         <item name="colorToolbarTitle">@color/white</item>
         <item name="colorPrimaryButton">@color/purple_500</item>
         <item name="colorPrimaryButtonPressed">@color/purple_600</item>
+        <item name="colorDialogBackground">@color/white</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
 
@@ -36,6 +38,11 @@
         <item name="android:textColorSecondary">#000000</item>
         <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="android:popupBackground">@color/white</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:textColorSecondary">#800404</item>
+
     </style>
 
 </resources>

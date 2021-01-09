@@ -5,4 +5,6 @@
     <attr name="colorPrimaryButton" format="reference|color" />
     <attr name="colorPrimaryButtonPressed" format="reference|color" />
 
+    <attr name="colorDialogBackground" format="reference|color"/>
+
 </resources>
