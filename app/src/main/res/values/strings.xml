@@ -24,8 +24,8 @@
     <string name="shared_pref_key_theme">THEME</string>
     <string name="shared_pref_key_first_req_perm_write_external_storage">PERM_FIRST_REQUESTED_WRITE_EXTERNAL_STORAGE</string>
 
-    <string name="permission_explanation_write_external_storage">The application needs access to memory to save videos</string>
-    <string name="grant_permission_in_settings">Please, grant permission in the app setting pages.</string>
+    <string name="permission_explanation_write_external_storage">The application needs memory access to save videos.</string>
+    <string name="grant_permission_in_settings">Please, grant the permission using app setting page.</string>
     <string name="explanation_dialog_cancel">Cancel</string>
     <string name="explanation_dialog_go_to_settings">Settings</string>
 

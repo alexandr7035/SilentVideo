@@ -1,5 +1,6 @@
 package com.alexandr7035.silentvideo
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Insets
 import android.net.Uri
@@ -21,6 +22,18 @@ class PermissionExplanationDialog(private val explanationString: String): Dialog
     private lateinit var btnCancel: TextView
     private lateinit var btnSettings: TextView
 
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        // According to the documentation, calling this after
+        // the fragment's Dialog is created will have no effect.
+        // So call it here
+        setStyle(STYLE_NORMAL, R.style.DialogTheme)
+
+        return super.onCreateDialog(savedInstanceState)
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(LOG_TAG, "")
 
@@ -36,7 +49,7 @@ class PermissionExplanationDialog(private val explanationString: String): Dialog
         val goToSettingsView: TextView = dialogView.findViewById(R.id.goToSettingsTextView)
         goToSettingsView.text = getString(R.string.grant_permission_in_settings)
 
-        setStyle(STYLE_NORMAL, R.style.DialogTheme)
+
 
         btnCancel = dialogView.findViewById(R.id.btnCancel)
         btnSettings = dialogView.findViewById(R.id.btnSettings)

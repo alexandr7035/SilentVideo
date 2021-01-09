@@ -20,7 +20,6 @@
         <item name="colorToolbarTitle">@color/white</item>
         <item name="colorPrimaryButton">@color/gray_700</item>
         <item name="colorPrimaryButtonPressed">@color/gray_600</item>
-        <item name="colorDialogBackground">@color/gray_500</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
 
@@ -40,8 +39,9 @@
         <item name="android:popupBackground">@color/gray_500</item>
     </style>
 
-    <style name="DialogTheme">
-        <item name="android:textColorSecondary">@color/gray_200</item>
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:textColor">@color/gray_200</item>
+        <item name="android:background">@color/gray_500</item>
     </style>
 
 </resources>
