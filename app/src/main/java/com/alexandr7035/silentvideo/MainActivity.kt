@@ -1,6 +1,5 @@
 package com.alexandr7035.silentvideo
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -20,7 +18,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -29,7 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.security.AccessController.getContext
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 
 private const val LOG_TAG = "DEBUG_SV"
@@ -224,7 +223,17 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
 
     private fun showSuccessSnack(time: Float) {
-        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted, time), Snackbar.LENGTH_LONG)
+
+        // To force the use of "." as separator
+        val nf = NumberFormat.getNumberInstance(Locale.US)
+        val formatter = nf as DecimalFormat
+        formatter.applyPattern("##0.00")
+
+        val timeText = formatter.format(time)
+
+        Log.d(LOG_TAG, timeText)
+
+        val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted, timeText), Snackbar.LENGTH_LONG)
         snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
 
             Log.d(LOG_TAG, "snack action")
