@@ -12,7 +12,6 @@
 
     <string name="file_chooser_title">Choose a video</string>
 
-    <string name="menu_item_settings_text">Settings</string>
     <string name="menu_item_vibration_text">Vibration</string>
     <string name="menu_item_theme_menu">Theme</string>
     <string name="menu_item_theme_as_system">As system</string>
