@@ -48,12 +48,16 @@
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
-        <item name="android:textColor">@color/gray_300</item>
-        <item name="android:background">@color/gray_700</item>
+        <item name="android:textColor">@color/gray_200</item>
+        <item name="android:background">@color/gray_600</item>
+        <item name="colorPrimaryButton">@color/gray_500</item>
+        <item name="colorPrimaryButtonPressed">@color/gray_400</item>
+        <item name="elevation">2dp</item>
     </style>
 
     <style name="snackbarStyle" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:background">@color/gray_600</item>
+        <item name="elevation">2dp</item>
     </style>
 
     <style name="snackbarTextStyle" parent="Widget.MaterialComponents.Snackbar.TextView">

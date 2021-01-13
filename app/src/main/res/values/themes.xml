@@ -27,6 +27,9 @@
 
         <!-- Fixes an issue with non-visible shadows-->
         <item name="android:spotShadowAlpha">0.4</item>
+
+        <item name="snackbarStyle">@style/snackbarStyle</item>
+
    </style>
 
     <style name="MyToolbarStyle" parent="Theme.SilentVideo">
@@ -42,6 +45,11 @@
     <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@color/white</item>
+        <item name="elevation">2dp</item>
+    </style>
+
+    <style name="snackbarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="elevation">2dp</item>
     </style>
 
 </resources>
