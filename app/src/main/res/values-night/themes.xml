@@ -27,6 +27,14 @@
 
         <!-- Fixes an issue with non-visible shadows-->
         <item name="android:spotShadowAlpha">0.4</item>
+
+
+        <!-- Make snackbar dark -->
+        <item name="snackbarStyle">@style/snackbarStyle</item>
+        <item name="snackbarTextViewStyle">@style/snackbarTextStyle</item>
+        <item name="snackbarButtonStyle">@style/snackbarButtonStyle</item>
+
+
     </style>
 
     <style name="MyToolbarStyle" parent="Theme.SilentVideo">
@@ -42,6 +50,18 @@
     <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
         <item name="android:textColor">@color/gray_300</item>
         <item name="android:background">@color/gray_700</item>
+    </style>
+
+    <style name="snackbarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="android:background">@color/gray_600</item>
+    </style>
+
+    <style name="snackbarTextStyle" parent="Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="snackbarButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textColor">@color/white</item>
     </style>
 
 </resources>

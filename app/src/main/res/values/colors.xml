@@ -20,6 +20,7 @@
     <color name="gray_500">#3A3A3A</color>
     <color name="gray_300">#676767</color>
     <color name="gray_200">#C2C2C2</color>
+    <color name="gray_100">#E0E0E0</color>
 
     <color name="orange_500">#FF6E40</color>
     <color name="orange_600">#AB4F32</color>
