@@ -5,13 +5,13 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.alexandr7035.silentvideo"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
+        versionCode 100
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     // Ffmpeg lib
-    implementation 'com.arthenica:mobile-ffmpeg-full:4.4.LTS'
+    implementation 'com.arthenica:mobile-ffmpeg-min:4.4.LTS'
 
     apply plugin: 'com.android.application'
     apply plugin: 'kotlin-android'
