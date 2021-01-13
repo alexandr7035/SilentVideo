@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">SilentVideo</string>
+    <string name="btn_choose_file">Open video</string>
+    <string name="btn_mute_video">Mute video</string>
+    
+    <string name="snack_text_video_muted">Video is muted in %1$s s.</string>
+    <string name="snack_text_video_muting_failed">FAILED to mute a video! </string>
+    <string name="snack_text_unsupported_file">ERROR: file type is invalid</string>
+    <string name="snack_action_ok">OK</string>
+
+    <string name="toast_select_video">Please, select a video first</string>
+
+    <string name="file_chooser_title">Choose a video</string>
+
+    <string name="menu_item_vibration_text">Vibration</string>
+    <string name="menu_item_theme_menu">Theme</string>
+    <string name="menu_item_theme_as_system">As system</string>
+    <string name="menu_item_theme_light">Light</string>
+    <string name="menu_item_theme_dark">Dark</string>
+
+
+    <string name="shared_pref_key_vibration">VIBRATION</string>
+    <string name="shared_pref_key_theme">THEME</string>
+    <string name="shared_pref_key_first_req_perm_write_external_storage">PERM_FIRST_REQUESTED_WRITE_EXTERNAL_STORAGE</string>
+
+    <string name="permission_explanation_write_external_storage">The application needs memory access to save videos.</string>
+    <string name="grant_permission_in_settings">Please, grant the permission using app setting page.</string>
+    <string name="explanation_dialog_cancel">Cancel</string>
+    <string name="explanation_dialog_go_to_settings">Settings</string>
+
 </resources>
