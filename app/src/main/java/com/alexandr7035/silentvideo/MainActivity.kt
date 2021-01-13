@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                             muteVideoBtn.isEnabled = true
                             resetFileBtn.visibility = View.VISIBLE
                             showSuccessSnack(time)
-                            vibrate(200)
+                            vibrate(100)
                         }
 
                         Log.d(LOG_TAG, "finish muting video")
