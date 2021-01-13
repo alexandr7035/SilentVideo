@@ -35,7 +35,7 @@ class PermissionExplanationDialog(private val explanationString: String): Dialog
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.d(LOG_TAG, "")
+        //Log.d(LOG_TAG, "")
 
         val dialogView: View = inflater.inflate(R.layout.dialog_permission_explanation, container, false)
 
@@ -96,7 +96,7 @@ class PermissionExplanationDialog(private val explanationString: String): Dialog
         }
 
         else if (v.id == btnSettings.id) {
-            Log.d(LOG_TAG, "redirect to app settings")
+            //Log.d(LOG_TAG, "redirect to app settings")
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             val uri = Uri.fromParts("package", activity?.packageName, null)
             intent.data = uri

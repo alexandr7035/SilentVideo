@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
         videoUriLiveData.observe(this, Observer<Uri> { uri ->
             if (uri != null) {
 
-                Log.d(LOG_TAG, uri.toString())
+                //Log.d(LOG_TAG, uri.toString())
 
                 logoView.visibility = View.GONE
 
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
 
-            Log.d(LOG_TAG, "update video uri")
+            //Log.d(LOG_TAG, "update video uri")
 
             val selectedFileUri = data?.data
 
@@ -147,10 +147,10 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
     fun muteVideoBtn(v: View) {
 
-        Log.d(LOG_TAG, "permission " + PermissionsManager.checkForWriteExternalStoragePermission(this))
+        //Log.d(LOG_TAG, "permission " + PermissionsManager.checkForWriteExternalStoragePermission(this))
 
         if (PermissionsManager.checkForWriteExternalStoragePermission(this) == PermissionsManager.PERMISSION_DENIED) {
-            Log.d(LOG_TAG, "request write permission")
+            //Log.d(LOG_TAG, "request write permission")
             PermissionsManager.requestWriteExternalStoragePermission(this, sharedPreferences)
         }
 
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
                 // FIXME Don't use globalscope
                 GlobalScope.launch {
-                    Log.d(LOG_TAG, "start muting in background")
+                    //Log.d(LOG_TAG, "start muting in background")
 
                     val startTimeMs = System.currentTimeMillis()
 
@@ -191,13 +191,13 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
                             vibrate(100)
                         }
 
-                        Log.d(LOG_TAG, "finish muting video")
+                        //Log.d(LOG_TAG, "finish muting video")
                     }
 
                     // If muting failed for some reason (see VideoMuter class)
                     else {
                         // FIXME handle this
-                        Log.d(LOG_TAG, "muting FAILED")
+                        //Log.d(LOG_TAG, "muting FAILED")
 
                         // Preform in ui thread
                         withContext(Dispatchers.Main) {
@@ -232,12 +232,12 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
         val timeText = formatter.format(time)
 
-        Log.d(LOG_TAG, timeText)
+        //Log.d(LOG_TAG, timeText)
 
         val snack: Snackbar = Snackbar.make(rootView, getString(R.string.snack_text_video_muted, timeText), Snackbar.LENGTH_LONG)
         snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
 
-            Log.d(LOG_TAG, "snack action")
+            //Log.d(LOG_TAG, "snack action")
             snack.dismiss()
         })
 
@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
         val snack: Snackbar = Snackbar.make(rootView, text, Snackbar.LENGTH_LONG)
         snack.setAction(getString(R.string.snack_action_ok), View.OnClickListener {
 
-            Log.d(LOG_TAG, "snack action")
+            //Log.d(LOG_TAG, "snack action")
             snack.dismiss()
         })
 
@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
-        Log.d(LOG_TAG, "onCreateOptionsMenu")
+        //Log.d(LOG_TAG, "onCreateOptionsMenu")
 
         val vibrationItem = menu.findItem(R.id.item_vibration)
 
@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
             }
 
             R.id.item_theme_as_system -> {
-                Log.d(LOG_TAG, "theme AS SYSTEM set")
+                //Log.d(LOG_TAG, "theme AS SYSTEM set")
                 item.isChecked = ! item.isChecked
 
                 menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -302,14 +302,14 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
             }
 
             R.id.item_theme_light -> {
-                Log.d(LOG_TAG, "theme LIGHT set")
+                //Log.d(LOG_TAG, "theme LIGHT set")
                 item.isChecked = ! item.isChecked
 
                 menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
 
             R.id.item_theme_dark -> {
-                Log.d(LOG_TAG, "theme DARK set")
+                //Log.d(LOG_TAG, "theme DARK set")
                 item.isChecked = ! item.isChecked
 
                 menuSwitchNightMode(AppCompatDelegate.MODE_NIGHT_YES)

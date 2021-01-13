@@ -53,7 +53,7 @@ class VideoMuter {
             // If any exception occurred (f.e. when copyTo() method called)
             catch (e: IOException) {
                 cleanUp()
-                Log.d(LOG_TAG, "FAIL: an exception. " + e.printStackTrace().toString())
+                //Log.d(LOG_TAG, "FAIL: an exception. " + e.printStackTrace().toString())
                 return MUTING_CODE_FAIL
             }
 
@@ -66,7 +66,7 @@ class VideoMuter {
 
         private fun copyVideoToWorkDir(context: Context) {
 
-            Log.d(LOG_TAG, "copy file to $TEMP_FILE_PATH")
+            //Log.d(LOG_TAG, "copy file to $TEMP_FILE_PATH")
 
             val contentResolver = context.contentResolver
             val srcStream: InputStream? = contentResolver.openInputStream(videoUri)
@@ -75,13 +75,13 @@ class VideoMuter {
 
             if (srcStream != null) {
                 val f: Long = srcStream.copyTo(dstStream, COPY_BUFFER_SIZE)
-                Log.d(LOG_TAG, "copied $f bytes")
+                //Log.d(LOG_TAG, "copied $f bytes")
                 srcStream.close()
             }
 
             dstStream.close()
 
-            Log.d(LOG_TAG, "stop copying")
+            //Log.d(LOG_TAG, "stop copying")
 
         }
 
@@ -89,7 +89,7 @@ class VideoMuter {
         private fun removeAudio(): Int {
 
             val command = "-i $TEMP_FILE_PATH -c copy -an $TEMP_MUTED_FILE_PATH -y"
-            Log.d(LOG_TAG, "execute FFMPEG command $command")
+            //Log.d(LOG_TAG, "execute FFMPEG command $command")
 
             // Execution can be synchronous because method is run inside coroutine
             return FFmpeg.execute(command)
@@ -103,7 +103,7 @@ class VideoMuter {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
-                Log.d(LOG_TAG, "save to MediaStore - API 29+")
+                //Log.d(LOG_TAG, "save to MediaStore - API 29+")
 
                 val valuesVideos = ContentValues()
                 val resolver: ContentResolver = context.contentResolver
@@ -127,10 +127,10 @@ class VideoMuter {
                     val videoFile = File(TEMP_MUTED_FILE_PATH)
                     val inputStream = FileInputStream(videoFile)
 
-                    Log.d(LOG_TAG, "copy video to galery")
+                    //Log.d(LOG_TAG, "copy video to galery")
                     val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
 
-                    Log.d(LOG_TAG, "copied $bytes bytes")
+                    //Log.d(LOG_TAG, "copied $bytes bytes")
 
                     inputStream.close()
                     out.close()
@@ -139,7 +139,7 @@ class VideoMuter {
                     resolver.update(uriSavedVideo, valuesVideos, null, null);
                 }
                 else {
-                    Log.d(LOG_TAG, "resolver uri is null")
+                    //Log.d(LOG_TAG, "resolver uri is null")
                     throw IOException("can't get video uri")
                 }
 
@@ -147,11 +147,11 @@ class VideoMuter {
 
             // For lower APIs
             else {
-                Log.d(LOG_TAG, "save to MediaStore - API lower than 29")
+                //Log.d(LOG_TAG, "save to MediaStore - API lower than 29")
                 val valuesVideos = ContentValues()
 
                 val videoFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath + File.separator + "SilentVideo/" + videoFileName
-                Log.d(LOG_TAG, "save video to $videoFilePath")
+                //Log.d(LOG_TAG, "save video to $videoFilePath")
 
                 valuesVideos.put(MediaStore.Video.Media.DATA, videoFilePath);
                 valuesVideos.put(MediaStore.Video.Media.TITLE, videoFileName);
@@ -165,7 +165,7 @@ class VideoMuter {
                 val resolver: ContentResolver = context.contentResolver
                 val uriSavedVideo = resolver.insert(collection, valuesVideos)
 
-                Log.d(LOG_TAG, "gallery uri $uriSavedVideo")
+                //Log.d(LOG_TAG, "gallery uri $uriSavedVideo")
 
                 if (uriSavedVideo != null) {
                     val pfd: ParcelFileDescriptor? = resolver.openFileDescriptor(uriSavedVideo, "w")
@@ -174,10 +174,10 @@ class VideoMuter {
                     val videoFile = File(TEMP_MUTED_FILE_PATH)
                     val inputStream = FileInputStream(videoFile)
 
-                    Log.d(LOG_TAG, "copy video to galery")
+                    //Log.d(LOG_TAG, "copy video to galery")
                     val bytes: Long = inputStream.copyTo(out, COPY_BUFFER_SIZE)
 
-                    Log.d(LOG_TAG, "copied $bytes bytes")
+                    //Log.d(LOG_TAG, "copied $bytes bytes")
 
                     inputStream.close()
                     out.close()
@@ -185,7 +185,7 @@ class VideoMuter {
 
                 }
                 else {
-                    Log.d(LOG_TAG, "resolver uri is null")
+                    //Log.d(LOG_TAG, "resolver uri is null")
                     throw IOException("can't get video uri")
                 }
 
@@ -196,7 +196,7 @@ class VideoMuter {
 
 
         private fun cleanUp() {
-            Log.d(LOG_TAG, "execute cleanup")
+            //Log.d(LOG_TAG, "execute cleanup")
             File(TEMP_FILE_PATH).delete()
             File(TEMP_MUTED_FILE_PATH).delete()
         }
