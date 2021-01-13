@@ -13,9 +13,11 @@
     <color name="teal_700">#FF018786</color>
 
 
-    <color name="gray_700">#1F1F1F</color>
-    <color name="gray_600">#2D2D2D</color>
-    <color name="gray_500">#363636</color>
+    <color name="gray_7000">#1E1E1E</color>
+
+    <color name="gray_700">#232323</color>
+    <color name="gray_600">#2B2B2B</color>
+    <color name="gray_500">#3A3A3A</color>
     <color name="gray_300">#676767</color>
     <color name="gray_200">#C2C2C2</color>
 

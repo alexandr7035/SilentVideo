@@ -13,13 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
-        <item name="android:windowBackground">@color/gray_500</item>
-        <item name="android:navigationBarColor">@color/gray_500</item>
+        <item name="android:windowBackground">@color/gray_700</item>
+        <item name="android:navigationBarColor">@color/gray_700</item>
 
         <!-- Custom attributes -->
         <item name="colorToolbarTitle">@color/white</item>
-        <item name="colorPrimaryButton">@color/gray_700</item>
-        <item name="colorPrimaryButtonPressed">@color/gray_600</item>
+        <item name="colorPrimaryButton">@color/gray_600</item>
+        <item name="colorPrimaryButtonPressed">@color/gray_500</item>
 
         <item name="toolbarStyle">@style/MyToolbarStyle</item>
 
@@ -36,12 +36,12 @@
     <style name="popupOverflowMenu" parent="Widget.AppCompat.Light.PopupMenu.Overflow" >
         <item name="android:textColorSecondary">@color/gray_300</item>
         <item name="android:dropDownVerticalOffset">0dp</item>
-        <item name="android:popupBackground">@color/gray_500</item>
+        <item name="android:popupBackground">@color/gray_700</item>
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
-        <item name="android:textColor">@color/gray_200</item>
-        <item name="android:background">@color/gray_500</item>
+        <item name="android:textColor">@color/gray_300</item>
+        <item name="android:background">@color/gray_700</item>
     </style>
 
 </resources>
