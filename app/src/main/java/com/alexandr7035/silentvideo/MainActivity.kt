@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
 
 
     fun resetFileBtn(v: View) {
+        vibrate(50)
         videoUriLiveData.postValue(null)
     }
 
