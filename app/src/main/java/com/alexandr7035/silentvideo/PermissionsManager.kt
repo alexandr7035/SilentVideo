@@ -63,14 +63,6 @@ class PermissionsManager {
                     val dialog = PermissionExplanationDialog(activity.getString(R.string.permission_explanation_write_external_storage))
                     dialog.show(fm, "tag")
 
-                    /*
-                    Log.d(LOG_TAG, "redirect to app settings")
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", activity.packageName, null)
-                    intent.data = uri
-                    activity.startActivityForResult(intent, 134)
-                    */
-
                 }
 
             }

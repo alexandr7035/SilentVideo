@@ -252,8 +252,6 @@ class MainActivity : AppCompatActivity(), Toolbar.OnMenuItemClickListener {
             snack.dismiss()
         })
 
-        // snack.setTextColor(ContextCompat.getColor(this, R.color.red_500))
-
         snack.show()
 
     }
