@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_choose_file">Открыть видео</string>
+    <string name="btn_mute_video">Убрать звук</string>
+    <string name="snack_text_video_muted">Звук удален за %1$s s.</string>
+    <string name="snack_text_video_muting_failed">Ошибка. Не удалось убрать звук.</string>
+    <string name="snack_text_unsupported_file">Ошибка. Неверный тип файла.</string>
+    <string name="snack_action_ok">ОК</string>
+    <string name="toast_select_video">Пожалуйста, сначала выберите видео</string>
+    <string name="file_chooser_title">Выберите видео</string>
+    <string name="menu_item_vibration_text">Вибрация</string>
+    <string name="menu_item_theme_menu">Тема</string>
+    <string name="menu_item_theme_as_system">Как в системе</string>
+    <string name="menu_item_theme_light">Светлая</string>
+    <string name="menu_item_theme_dark">Темная</string>
+    <string name="permission_explanation_write_external_storage">Приложению нужен доступ к памяти, чтобы сохранить видео.</string>
+    <string name="grant_permission_in_settings">Пожалуйста, предоставьте соответствующее разрешение, используя страницу настроек.</string>
+    <string name="explanation_dialog_cancel">Отмена</string>
+    <string name="explanation_dialog_go_to_settings">Настройки</string>
+    <string name="permission_denied">Недостаточно прав</string>
+</resources>
